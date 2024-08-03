@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      containers:
+        - name: todo-app
+          image: pyrynot/todo-app:1.05
+          imagePullPolicy: Always
+          env:
+              - name: PORT
+                value: "8010"
+              - name: DUMMY_VARIABLE # added so kubernetes pulls the changed image with the same tag
+                value: "1"
+          resources:  # added to get rid of kubernetes extension warnings
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            
