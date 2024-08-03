@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      volumes:
+        - name: shared-storage
+          emptyDir: {}
+      containers:
+        - name: logger
+          image: pyrynot/logger:1.10
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /shared
+          env:
+              #- name: PORT
+              #  value: "8010"
+              - name: DUMMY_VARIABLE # added so kubernetes pulls the changed image with the same tag
+                value: "3"
+        
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+
+
+
+        - name: reader
+          image: pyrynot/reader:1.10
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /shared
+          env:
+              - name: DUMMY_VARIABLE
+                value: "3"
+          resources:  # added to get rid of kubernetes extension warnings
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
