@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pong-log-app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pong-log-app
+  template:
+    metadata:
+      labels:
+        app: pong-log-app
+    spec:
+      containers:
+        - name: pingpong-app
+          image: pyrynot/pingpong-app:1.11
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /mnt/data
+              name: shared-storage
+          env:
+              #- name: PORT
+              #  value: "8010"
+              - name: DUMMY_VARIABLE # added so kubernetes pulls the changed image with the same tag
+                value: "3"
+          resources:  # added to get rid of kubernetes extension warnings
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+        - name: log-output
+          image: pyrynot/log-output:1.11
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /mnt/data
+              name: shared-storage
+          env:
+              #- name: PORT
+              #  value: "8010"
+              - name: DUMMY_VARIABLE # added so kubernetes pulls the changed image with the same tag
+                value: "3"
+          resources:  # added to get rid of kubernetes extension warnings
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+      volumes:
+          - name: shared-storage
+            persistentVolumeClaim:
+              claimName: shared-pvc
+
+
