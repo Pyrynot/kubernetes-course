@@ -7,8 +7,11 @@ spec:
   selector:
     app: todo-app # This is the app as declared in the deployment.
   ports:
-    - name: http
-      #nodePort: 30080 # This is the port that is available outside. Value for nodePort can be between 30000-32767
+    - name: http-todo-app
       protocol: TCP
-      port: 8010 # This is a port that is available to the cluster, in this case it can be ~ anything
-      targetPort: 8010 # This is the target port
+      port: 8010
+      targetPort: 8010
+    - name: http-todo-backend
+      protocol: TCP
+      port: 8000 # This is a port that is available to the cluster, in this case it can be ~ anything
+      targetPort: 8000  # This is the target port

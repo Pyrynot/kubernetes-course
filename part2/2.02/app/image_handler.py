@@ -6,6 +6,7 @@ import os
 
 logging.basicConfig(level=logging.INFO)
 
+
 def fetch_image() -> None:
     """Fetch and save the image from the specified URL."""
     try:

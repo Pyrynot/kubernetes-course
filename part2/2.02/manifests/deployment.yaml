@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: todo-app
-          image: pyrynot/todo-app:1.12
+          image: pyrynot/todo-app:2.02
           imagePullPolicy: Always
           env:
               - name: PORT
@@ -22,6 +22,21 @@ spec:
               - name: DUMMY_VARIABLE # added so kubernetes pulls the changed image with the same tag
                 value: "1"
           resources:  # added to get rid of kubernetes extension warnings
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: image-cache
+              mountPath: /app/static
+        - name: todo-backend
+          image: pyrynot/todo-backend:2.02
+          env:
+            - name: PORT
+              value: "8000"
+          resources:
             requests:
               memory: "128Mi"
               cpu: "250m"

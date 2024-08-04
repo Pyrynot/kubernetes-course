@@ -19,3 +19,4 @@ spec:
           operator: In
           values:
           - k3d-k3s-default-agent-0
+          
