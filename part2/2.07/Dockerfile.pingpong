@@ -1,0 +1,19 @@
+FROM python:3.12.4-alpine3.19
+
+WORKDIR /app
+
+COPY reqs.txt /app/reqs.txt
+
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
+
+RUN pip install --no-cache-dir --upgrade -r /app/reqs.txt
+
+RUN pip install --no-cache-dir sqlalchemy psycopg2-binary
+
+COPY /app/pingpong.py /app/
+
+ENV PYTHONUNBUFFERED=1
+
+CMD ["uvicorn", "pingpong:app", "--host", "0.0.0.0", "--port", "8020"]
+
+#
