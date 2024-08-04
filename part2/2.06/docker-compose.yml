@@ -1,0 +1,27 @@
+services:
+  logger:
+    build:
+      context: .
+      dockerfile: Dockerfile.logger
+    image: pyrynot/logger:2.06
+    container_name: logger
+    ports:
+      - "8000:8000"
+
+  reader:
+    build:
+      context: .
+      dockerfile: Dockerfile.reader
+    image: pyrynot/reader:2.06
+    container_name: reader
+    ports:
+      - "8001:8001"
+
+  pingpong:
+    build:
+      context: .
+      dockerfile: Dockerfile.pingpong
+    image: pyrynot/pingpong-app:2.06
+    container_name: pingpong
+    ports:
+      - "8020:8020"
