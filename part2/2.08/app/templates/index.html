@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <style>
+        .todo-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .todo-item {
+            margin: 5px 0;
+        }
+        img {
+            max-width: 300px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Random Image</h1>
+    <img src="/image" alt="Randomly fetched image">
+    <h1>Todo App</h1>
+    <p>Welcome to my to-do app!</p>
+    <input type="text" id="todoInput" maxlength="140" placeholder="Enter your todo (max 140 characters)">
+    <button id="addTodoButton">Add Todo</button>
+    <ul class="todo-list" id="todoList">
+        <li class="todo-item">Sample todo 1</li>
+        <li class="todo-item">Sample todo 2</li>
+        <li class="todo-item">Sample todo 3</li>
+    </ul>
+    <script>
+        document.getElementById('addTodoButton').addEventListener('click', addTodo);
+        document.addEventListener('DOMContentLoaded', fetchTodos);
+
+        async function fetchTodos() {
+            const response = await fetch('/todos');
+            const todos = await response.json();
+            const todoList = document.getElementById('todoList');
+            todoList.innerHTML = '';
+            todos.forEach(todo => {
+                const todoItem = document.createElement('li');
+                todoItem.textContent = todo.content;
+                todoItem.classList.add('todo-item');
+                todoList.appendChild(todoItem);
+            });
+        }
+
+        async function addTodo() {
+            const todoInput = document.getElementById('todoInput');
+            const todoText = todoInput.value.trim();
+            if (isValidTodoText(todoText)) {
+                const newTodo = { content: todoText };
+                const response = await fetch('/todos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newTodo)
+                });
+                const createdTodo = await response.json();
+                const todoList = document.getElementById('todoList');
+                const todoItem = document.createElement('li');
+                todoItem.textContent = createdTodo.content;
+                todoItem.classList.add('todo-item');
+                todoList.appendChild(todoItem);
+                todoInput.value = '';
+            }
+        }
+
+        function isValidTodoText(todoText) {
+            return todoText.length > 0 && todoText.length <= 140;
+        }
+    </script>
+</body>
+</html>
