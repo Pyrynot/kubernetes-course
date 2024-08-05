@@ -1,0 +1,25 @@
+services:
+  todo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: pyrynot/todo-app:2.10
+    container_name: todo-app
+    ports:
+      - "8010:8010"
+
+  todo-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    image: pyrynot/todo-backend:2.10
+    container_name: todo-backend
+    ports:
+      - "8000:8000"
+
+  random-todo-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile.cron
+    image: pyrynot/random-todo-generator:2.10
+    container_name: random-todo-generator

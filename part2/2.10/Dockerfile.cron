@@ -1,0 +1,11 @@
+FROM alpine:3.19
+
+RUN apk add --no-cache curl
+
+WORKDIR /app
+
+COPY /app/call_random_todo.sh /app/call_random_todo.sh
+
+RUN chmod +x /app/call_random_todo.sh
+
+CMD ["/app/call_random_todo.sh"]
