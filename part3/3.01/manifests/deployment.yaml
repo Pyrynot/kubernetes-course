@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: exercise-namespace
+  name: pingponglog-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pingponglog
+  template:
+    metadata:
+      labels:
+        app: pingponglog
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: pingponglog-configmap
+      containers:
+        - name: logger
+          image: pyrynot/logger:3.01
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+          env:
+              - name: MESSAGE
+                valueFrom:
+                  configMapKeyRef:
+                    name: pingponglog-configmap
+                    key: MESSAGE
+              - name: DUMMY_VARIABLE # added so kubernetes pulls the changed image with the same tag
+                value: "4"
+        
+
+
+
+
+        - name: reader
+          image: pyrynot/reader:3.01
+          imagePullPolicy: Always
+
+          env:
+              - name: DUMMY_VARIABLE
+                value: "4"
+
+
+
+        - name: pingpong-app
+          image: pyrynot/pingpong-app:3.01
+          imagePullPolicy: Always
+          #volumeMounts:
+            #- name: shared-storage
+              #mountPath: /shared
+          env:
+              - name: DUMMY_VARIABLE
+                value: "4"
+              - name: DATABASE_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: DATABASE_URL
+
