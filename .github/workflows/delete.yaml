@@ -6,6 +6,7 @@ jobs:
   delete:
     if: github.event.ref_type == 'branch'
     runs-on: ubuntu-latest
+    environment: deploy
 
     env:
       PROJECT_ID: ${{ secrets.GKE_PROJECT }}
