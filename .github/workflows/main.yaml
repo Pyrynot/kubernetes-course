@@ -17,6 +17,8 @@ env:
   BACKEND_IMAGE: todo-backend
   CRON_IMAGE: random-todo-generator
   BUILD_CONTEXT: part3/3.03
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
 jobs:
   build-publish-deploy:
@@ -64,6 +66,15 @@ jobs:
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
   
+
+      - name: Create Kubernetes Secret
+        run: |-
+          kubectl create secret generic postgres-secret \
+            --namespace project-namespace \
+            --from-literal=POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }} \
+            --from-literal=DATABASE_URL=${{ env.DATABASE_URL }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy to GKE
         run: |-
             cd ${{ env.BUILD_CONTEXT }}
