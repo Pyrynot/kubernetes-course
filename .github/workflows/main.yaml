@@ -19,6 +19,7 @@ env:
   BUILD_CONTEXT: part3/3.03
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  NAMESPACE: ${{ github.ref_name == 'main' && 'default' || github.ref_name }}
 
 jobs:
   build-publish-deploy:
@@ -68,19 +69,14 @@ jobs:
   
       - name: Create and set Kubernetes Namespace
         run: |-
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            NAMESPACE=default
-          else
-            NAMESPACE=${GITHUB_REF#refs/heads/}
-            kubectl create namespace $NAMESPACE || true
-          fi
-          kubectl config set-context --current --namespace=$NAMESPACE
+          kubectl create namespace ${{ env.NAMESPACE }} || true
+          kubectl config set-context --current --namespace=${{ env.NAMESPACE }}
 
 
       - name: Create Kubernetes Secret
         run: |-
             kubectl create secret generic postgres-secret \
-              --namespace $NAMESPACE \
+              --namespace ${{ env.NAMESPACE }} \
               --from-literal=POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }} \
               --from-literal=DATABASE_URL=${{ env.DATABASE_URL }} \
               --dry-run=client -o yaml | kubectl apply -f -
@@ -88,12 +84,12 @@ jobs:
       - name: Deploy to GKE
         run: |-
             cd ${{ env.BUILD_CONTEXT }}
-            kustomize edit set namespace $NAMESPACE
+            kustomize edit set namespace ${{ env.NAMESPACE }}
             kustomize edit set image PROJECT/APP_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize edit set image PROJECT/BACKEND_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize edit set image PROJECT/CRON_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize build . | kubectl apply -f -
             sleep 5
-            kubectl rollout status deployment/${{ env.DEPLOYMENT }} --namespace=$NAMESPACE
-            kubectl get cronjobs --namespace=$NAMESPACE
-            kubectl get services --namespace=$NAMESPACE -o wide
+            kubectl rollout status deployment/${{ env.DEPLOYMENT }} --namespace=${{ env.NAMESPACE }}
+            kubectl get cronjobs --namespace=${{ env.NAMESPACE }}
+            kubectl get services --namespace=${{ env.NAMESPACE }} -o wide
