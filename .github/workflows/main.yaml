@@ -16,6 +16,7 @@ env:
   APP_IMAGE: todo-app
   BACKEND_IMAGE: todo-backend
   CRON_IMAGE: random-todo-generator
+  BUILD_CONTEXT: part3/3.03
 
 jobs:
   build-publish-deploy:
@@ -47,29 +48,29 @@ jobs:
 
       - name: Build and publish todo-app
         run: |-
-          docker build -f Dockerfile.app -t gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }} .
-          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
-
+            docker build -f ${{ env.BUILD_CONTEXT }}/Dockerfile.app -t gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }} ${{ env.BUILD_CONTEXT }}
+            docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+  
       - name: Build and publish todo-backend
         run: |-
-          docker build -f Dockerfile.backend -t gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }} .
-          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
-
+            docker build -f ${{ env.BUILD_CONTEXT }}/Dockerfile.backend -t gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }} ${{ env.BUILD_CONTEXT }}
+            docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+  
       - name: Build and publish random-todo-generator
         run: |-
-          docker build -f Dockerfile.cron -t gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }} .
-          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
-
+            docker build -f ${{ env.BUILD_CONTEXT }}/Dockerfile.cron -t gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }} ${{ env.BUILD_CONTEXT }}
+            docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+  
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
-
+  
       - name: Deploy to GKE
         run: |-
-          kustomize edit set image PROJECT/APP_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
-          kustomize edit set image PROJECT/BACKEND_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
-          kustomize edit set image PROJECT/CRON_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
-          kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment todo-app
-          kubectl rollout status deployment todo-backend
-          kubectl get cronjobs
-          kubectl get services -o wide
+            kustomize edit set image PROJECT/APP_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+            kustomize edit set image PROJECT/BACKEND_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+            kustomize edit set image PROJECT/CRON_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+            kustomize build . | kubectl apply -f -
+            kubectl rollout status deployment todo-app
+            kubectl rollout status deployment todo-backend
+            kubectl get cronjobs
+            kubectl get services -o wide
