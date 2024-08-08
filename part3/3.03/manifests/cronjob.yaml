@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: random-todo-generator
+  namespace: project-namespace
+spec:
+  #schedule: "*/1 * * * *"  # Run every minute
+  schedule: "0 * * * *"  # Run every hour
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: random-todo-generator
+            image: PROJECT/CRON_IMAGE
+            env:
+            - name: API_ENDPOINT
+              value: "http://todo-app-svc:8000/todos/random"
+          restartPolicy: OnFailure

@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests/deployment.yaml
+  - manifests/service.yaml
+  - manifests/cronjob.yaml
+  - manifests/ingress.yaml
+  - manifests/postgres-service.yaml
+  - manifests/pvc.yaml
+  - manifests/secret.yaml
+  - manifests/statefulset.yaml
+images:
+  - name: PROJECT/CRON_IMAGE
+    newName: pyrynot/random-todo-generator:3.03
+  - name: PROJECT/BACKEND_IMAGE
+    newName: pyrynot/todo-backend:3.03
+  - name: PROJECT/APP_IMAGE
+    newName: pyrynot/todo-app:3.03
