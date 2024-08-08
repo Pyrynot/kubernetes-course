@@ -1,0 +1,74 @@
+name: Release application
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'part3/3.03/**'
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: dwk-cluster
+  GKE_ZONE: europe-west2-c
+  DEPLOYMENT: todo-app-dep
+  BRANCH: ${{ github.ref_name }}
+  APP_IMAGE: todo-app
+  BACKEND_IMAGE: todo-backend
+  CRON_IMAGE: random-todo-generator
+
+jobs:
+  build-publish-deploy:
+    name: Build, Publish and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GKE_SA_KEY }}'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for gcloud
+        run: gcloud --quiet auth configure-docker
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: '${{ env.GKE_CLUSTER }}'
+          project_id: '${{ env.PROJECT_ID }}'
+          location: '${{ env.GKE_ZONE }}'
+
+      - name: Build and publish todo-app
+        run: |-
+          docker build -f Dockerfile.app -t gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }} .
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+
+      - name: Build and publish todo-backend
+        run: |-
+          docker build -f Dockerfile.backend -t gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }} .
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+
+      - name: Build and publish random-todo-generator
+        run: |-
+          docker build -f Dockerfile.cron -t gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }} .
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Deploy to GKE
+        run: |-
+          kustomize edit set image PROJECT/APP_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+          kustomize edit set image PROJECT/BACKEND_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+          kustomize edit set image PROJECT/CRON_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
+          kustomize build . | kubectl apply -f -
+          kubectl rollout status deployment todo-app
+          kubectl rollout status deployment todo-backend
+          kubectl get cronjobs
+          kubectl get services -o wide
