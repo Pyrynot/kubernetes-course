@@ -85,7 +85,7 @@ jobs:
             kustomize edit set image PROJECT/BACKEND_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize edit set image PROJECT/CRON_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize build . | kubectl apply -f -
-            kubectl rollout status deployment todo-app
-            kubectl rollout status deployment todo-backend
-            kubectl get cronjobs
-            kubectl get services -o wide
+            sleep 5
+            kubectl rollout status deployment/todo-app-dep --namespace project-namespace
+            kubectl get cronjobs --namespace project-namespace
+            kubectl get services --namespace project-namespace -o wide
