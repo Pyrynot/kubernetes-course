@@ -66,6 +66,7 @@ jobs:
   
       - name: Deploy to GKE
         run: |-
+            cd ${{ env.BUILD_CONTEXT }}
             kustomize edit set image PROJECT/APP_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize edit set image PROJECT/BACKEND_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize edit set image PROJECT/CRON_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
