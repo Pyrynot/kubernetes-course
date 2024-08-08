@@ -1,6 +1,6 @@
 # Commands used:
 
-(okay maybe it wasn't the best strategy to keep copy pasting the projects!!!! Project can be )
+(okay maybe it wasn't the best strategy to keep copy pasting the projects!!!! Project can be found in 3.03 folder)
 
 Both deployment pipelines:
 
