@@ -1,27 +1,18 @@
-# .github/workflows/delete-environment.yaml
+name: Branch Deleted
 
-name: Delete
-
-on:
-  delete:
-    branches:
-      - '**'
-
-env:
-  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: dwk-cluster
-  GKE_ZONE: europe-west2-c
+on: delete
 
 jobs:
-  delete-environment:
-    name: Delete Environment
+  delete:
+    if: github.event.ref_type == 'branch'
     runs-on: ubuntu-latest
-    environment: deploy
+
+    env:
+      PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+      GKE_CLUSTER: dwk-cluster
+      GKE_ZONE: europe-west2-c
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -40,7 +31,8 @@ jobs:
           project_id: '${{ env.PROJECT_ID }}'
           location: '${{ env.GKE_ZONE }}'
 
-      - name: Delete Kubernetes Namespace
+      - name: Clean up
         run: |-
-          BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          kubectl delete namespace $BRANCH_NAME
+          NAMESPACE=${{ github.event.ref }}
+          echo "Deleting namespace: $NAMESPACE"
+          kubectl delete namespace $NAMESPACE
