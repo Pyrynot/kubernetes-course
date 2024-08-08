@@ -68,27 +68,32 @@ jobs:
   
       - name: Create and set Kubernetes Namespace
         run: |-
-          kubectl create namespace ${GITHUB_REF#refs/heads/} || true
-          kubectl config set-context --current --namespace=${GITHUB_REF#refs/heads/}
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            NAMESPACE=default
+          else
+            NAMESPACE=${GITHUB_REF#refs/heads/}
+            kubectl create namespace $NAMESPACE || true
+          fi
+          kubectl config set-context --current --namespace=$NAMESPACE
 
 
       - name: Create Kubernetes Secret
         run: |-
-          kubectl create secret generic postgres-secret \
-            --namespace ${GITHUB_REF#refs/heads/} \
-            --from-literal=POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }} \
-            --from-literal=DATABASE_URL=${{ env.DATABASE_URL }} \
-            --dry-run=client -o yaml | kubectl apply -f -
+            kubectl create secret generic postgres-secret \
+              --namespace $NAMESPACE \
+              --from-literal=POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }} \
+              --from-literal=DATABASE_URL=${{ env.DATABASE_URL }} \
+              --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy to GKE
         run: |-
             cd ${{ env.BUILD_CONTEXT }}
-            kustomize edit set namespace ${GITHUB_REF#refs/heads/}
+            kustomize edit set namespace $NAMESPACE
             kustomize edit set image PROJECT/APP_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize edit set image PROJECT/BACKEND_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize edit set image PROJECT/CRON_IMAGE=gcr.io/${{ env.PROJECT_ID }}/${{ env.CRON_IMAGE }}:${{ env.BRANCH }}-${{ github.sha }}
             kustomize build . | kubectl apply -f -
             sleep 5
-            kubectl rollout status deployment/${{ env.DEPLOYMENT }} --namespace=${GITHUB_REF#refs/heads/}
-            kubectl get cronjobs --namespace=${GITHUB_REF#refs/heads/}
-            kubectl get services --namespace=${GITHUB_REF#refs/heads/} -o wide
+            kubectl rollout status deployment/${{ env.DEPLOYMENT }} --namespace=$NAMESPACE
+            kubectl get cronjobs --namespace=$NAMESPACE
+            kubectl get services --namespace=$NAMESPACE -o wide
