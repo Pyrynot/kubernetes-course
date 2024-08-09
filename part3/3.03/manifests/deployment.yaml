@@ -23,7 +23,7 @@ spec:
               - name: PORT
                 value: "8010"
               - name: DUMMY_VARIABLE # added so kubernetes pulls the changed image with the same tag
-                value: "2"
+                value: "3"
           resources:  # added to get rid of kubernetes extension warnings
             requests:
               memory: "128Mi"
