@@ -17,4 +17,4 @@ images:
   - name: PROJECT/APP_IMAGE
     newName: pyrynot/todo-app:3.03
   - name: PROJECT/BACKUP_IMAGE
-    newName: google/cloud-sdk:latest
+    newName: pyrynot/pg-backup:3.03

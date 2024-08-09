@@ -1,6 +1,6 @@
 FROM google/cloud-sdk:latest
 
-RUN gcloud components install kubectl
+RUN apt-get update && apt-get install -y kubectl
 
 WORKDIR /usr/src/app
 

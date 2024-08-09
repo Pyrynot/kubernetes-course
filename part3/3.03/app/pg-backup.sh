@@ -1,6 +1,6 @@
 #!/bin/bash
 
-POSTGRES_POD_NAME=$(kubectl get pods --selector=app=your-postgres-app -o jsonpath='{.items[0].metadata.name}')
+POSTGRES_POD_NAME="postgres-ss-0"
 POSTGRES_USER="postgres"
 POSTGRES_HOST="postgres-svc"
 POSTGRES_PORT="5432"
