@@ -14,6 +14,11 @@ spec:
             env:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/secrets/gcs/key.json"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
             volumeMounts:
             - name: gcs-credentials
               mountPath: "/secrets/gcs"
