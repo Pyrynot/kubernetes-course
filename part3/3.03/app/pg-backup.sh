@@ -19,7 +19,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-gsutil cp $BACKUP_FILE gs://backup_bucket_kek/
+gsutil cp $BACKUP_FILE gs://backup_bucket_kek
 
 if [ $? -ne 0 ]; then
   echo "Error: Failed to upload backup to Google Cloud Storage."
