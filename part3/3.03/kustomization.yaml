@@ -8,6 +8,7 @@ resources:
   - manifests/postgres-service.yaml
   - manifests/pvc.yaml
   - manifests/statefulset.yaml
+  - manifests/pg-backup.yaml
 images:
   - name: PROJECT/CRON_IMAGE
     newName: pyrynot/random-todo-generator:3.03
@@ -15,3 +16,5 @@ images:
     newName: pyrynot/todo-backend:3.03
   - name: PROJECT/APP_IMAGE
     newName: pyrynot/todo-app:3.03
+  - name: PROJECT/BACKUP_IMAGE
+    newName: google/cloud-sdk:latest

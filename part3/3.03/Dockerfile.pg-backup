@@ -1,0 +1,13 @@
+FROM google/cloud-sdk:latest
+
+RUN gcloud components install kubectl
+
+WORKDIR /usr/src/app
+
+COPY /app/pg-backup.sh /app/pg-backup.sh
+
+RUN chmod +x /app/pg-backup.sh
+
+ENV GOOGLE_APPLICATION_CREDENTIALS="/secrets/gcs/key.json"
+
+CMD ["/app/pg-backup.sh"]
