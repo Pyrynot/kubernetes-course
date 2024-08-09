@@ -24,13 +24,13 @@ spec:
                 value: "8010"
               - name: DUMMY_VARIABLE # added so kubernetes pulls the changed image with the same tag
                 value: "3"
-          resources:  # added to get rid of kubernetes extension warnings
+          resources:
             requests:
               memory: "128Mi"
-              cpu: "250m"
+              cpu: "100m"
             limits:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "200m"
           volumeMounts:
             - name: image-cache
               mountPath: /app/static
@@ -48,10 +48,10 @@ spec:
           resources:
             requests:
               memory: "128Mi"
-              cpu: "249m"
+              cpu: "100m"
             limits:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "200m"
           volumeMounts:
             - name: image-cache
               mountPath: /app/static

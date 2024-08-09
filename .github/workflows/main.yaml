@@ -21,7 +21,7 @@ env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   NAMESPACE: ${{ github.ref_name == 'main' && 'default' || github.ref_name }}
 
-jobs:
+#jobs: disabled
   build-publish-deploy:
     name: Build, Publish and Deploy
     runs-on: ubuntu-latest
