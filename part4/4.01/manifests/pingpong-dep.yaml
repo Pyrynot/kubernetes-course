@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: exercise-namespace
+  name: pingpong-dep
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: pingpong
+  template:
+    metadata:
+      labels:
+        app: pingpong
+    spec:
+      containers:
+        - name: pingpong-app
+          image: PROJECT/PINGPONG_IMAGE
+          imagePullPolicy: Always
+          env:
+              - name: DATABASE_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: DATABASE_URL
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "129Mi"
+              cpu: "200m"
+          readinessProbe:
+            httpGet:
+              path: /pingpong/healthz
+              port: 8020
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 5
+            successThreshold: 1
+            timeoutSeconds: 1

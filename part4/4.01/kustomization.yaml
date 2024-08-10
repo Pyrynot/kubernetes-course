@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests/logoutput-dep.yaml  
+  - manifests/pingpong-dep.yaml        
+  - manifests/logoutput-svc.yaml
+  - manifests/pingpong-svc.yaml 
+  - manifests/secret.yaml
+  - manifests/ingress.yaml
+  - manifests/postgres-service.yaml
+  #- manifests/statefulset.yaml
+  - manifests/configmap.yaml
+
+images:
+  - name: PROJECT/PINGPONG_IMAGE
+    newName: pyrynot/pingpong-app
+    newTag: "4.01"
+  - name: PROJECT/READER_IMAGE
+    newName: pyrynot/reader
+    newTag: "4.01"
+  - name: PROJECT/LOGGER_IMAGE
+    newName: pyrynot/logger
+    newTag: "4.01"
