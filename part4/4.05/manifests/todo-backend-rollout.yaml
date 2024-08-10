@@ -1,0 +1,68 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: todo-backend-dep
+  namespace: project-namespace
+spec:
+  replicas: 1
+  strategy:
+    canary:
+      steps:
+        - setWeight: 25
+        - analysis:
+            templates:
+              - templateName: cpu-usage
+        - pause: 
+            duration: 15s  # Wait 1 minute
+        - setWeight: 100
+        - analysis:
+            templates:
+              - templateName: cpu-usage
+  selector:
+    matchLabels:
+      app: todo-backend
+  template:
+    metadata:
+      labels:
+        app: todo-backend
+    spec:
+      containers:
+        - name: todo-backend
+          image: pyrynot/todo-backend:4.02
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "8000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DATABASE_URL
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "262Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+
+      #     volumeMounts:
+      #       - name: image-cache
+      #         mountPath: /app/static
+      # volumes:
+      #   - name: image-cache
+      #     persistentVolumeClaim:
+      #       claimName: image-cache-pvc

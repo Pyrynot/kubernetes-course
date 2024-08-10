@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: todo-app-dep
+  namespace: project-namespace
+spec:
+  replicas: 4
+  strategy:
+    canary:
+      steps:
+        - setWeight: 25
+        - analysis:
+            templates:
+              - templateName: cpu-usage
+        - pause: { duration: 60 }  # Wait 1 minute
+        - setWeight: 50
+        - analysis:
+            templates:
+              - templateName: cpu-usage
+        - pause: { duration: 60 }  # Wait 1 minute
+        - setWeight: 75
+        - analysis:
+            templates:
+              - templateName: cpu-usage
+        - pause: { duration: 60 }  # Wait 1 minute
+        - setWeight: 100
+        - analysis:
+            templates:
+              - templateName: cpu-usage
+        - pause: { duration: 420 } # Wait 7 minutes
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      containers:
+        - name: todo-app
+          image: pyrynot/todo-backend:4.02
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "8010"
+            - name: DUMMY_VARIABLE
+              value: "4"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          volumeMounts:
+            - name: image-cache
+              mountPath: /app/static
+      volumes:
+        - name: image-cache
+          persistentVolumeClaim:
+            claimName: image-cache-pvc
