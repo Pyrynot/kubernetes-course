@@ -4,7 +4,7 @@ resources:
   - manifests/analysistemplate.yaml
   - manifests/cronjob.yaml
   - manifests/ingress.yaml
-  #- manifests/pg-backup.yaml
+  - manifests/pg-backup.yaml
   - manifests/postgres-service.yaml
   - manifests/pv.yaml
   - manifests/pvc.yaml

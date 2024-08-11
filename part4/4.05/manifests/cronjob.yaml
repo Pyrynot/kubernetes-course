@@ -13,6 +13,7 @@ spec:
           containers:
           - name: random-todo-generator
             image: PROJECT/CRON_IMAGE
+            imagePullPolicy: Always
             env:
             - name: API_ENDPOINT
               value: "http://todo-backend-svc:8000/todos/random"

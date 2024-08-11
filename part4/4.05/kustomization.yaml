@@ -26,5 +26,5 @@ images:
     newName: pyrynot/todo-backend:4.06
   - name: PROJECT/APP_IMAGE
     newName: pyrynot/todo-app:4.06
-  #- name: PROJECT/BACKUP_IMAGE
-    #newName: pyrynot/pg-backup:4.02
+  - name: PROJECT/BACKUP_IMAGE
+    newName: pyrynot/pg-backup:4.02

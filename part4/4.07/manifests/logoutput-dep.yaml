@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: exercise-namespace
+  name: logoutput-dep
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: logoutput
+  template:
+    metadata:
+      labels:
+        app: logoutput
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: pingponglog-configmap
+      containers:
+        - name: logger
+          image: PROJECT/LOGGER_IMAGE
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+          env:
+              - name: MESSAGE
+                valueFrom:
+                  configMapKeyRef:
+                    name: pingponglog-configmap
+                    key: MESSAGE
+              - name: DUMMY_VARIABLE # added so kubernetes pulls the changed image with the same tag
+                value: "6"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          readinessProbe:
+            httpGet:
+              path: /logger/healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+        
+        
+        - name: reader
+          image: PROJECT/READER_IMAGE
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
