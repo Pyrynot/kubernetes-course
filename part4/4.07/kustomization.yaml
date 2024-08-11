@@ -5,7 +5,7 @@ resources:
   - manifests/pingpong-dep.yaml        
   - manifests/logoutput-svc.yaml
   - manifests/pingpong-svc.yaml 
-  - manifests/secret.yaml
+  #- manifests/secret.yaml
   - manifests/ingress.yaml
   - manifests/postgres-service.yaml
   #- manifests/statefulset.yaml

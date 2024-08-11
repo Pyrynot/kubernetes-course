@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: logoutput
+  namespace: argocd
+spec:
+  destination:
+    namespace: exercise-namespace
+    server: https://kubernetes.default.svc
+  source:
+    path: part4/4.07
+    repoURL: https://github.com/Pyrynot/kubernetes-course.git
+    targetRevision: HEAD
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
