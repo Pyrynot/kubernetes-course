@@ -23,15 +23,15 @@ resources:
 images:
 - name: PROJECT/APP_IMAGE
   newName: pyrynot/todo-app
-  newTag: 0a4a5fc78508ed37276b843bdd76d5608f5cf41f
+  newTag: aa49d2de9ad53eba1f9d13d72a8a46299eb2e7e4
 - name: PROJECT/BACKEND_IMAGE
   newName: pyrynot/todo-backend
-  newTag: 0a4a5fc78508ed37276b843bdd76d5608f5cf41f
+  newTag: aa49d2de9ad53eba1f9d13d72a8a46299eb2e7e4
 - name: PROJECT/BACKUP_IMAGE
   newName: pyrynot/pg-backup:4.08
 - name: PROJECT/BROADCASTER_IMAGE
   newName: pyrynot/broadcaster
-  newTag: 0a4a5fc78508ed37276b843bdd76d5608f5cf41f
+  newTag: aa49d2de9ad53eba1f9d13d72a8a46299eb2e7e4
 - name: PROJECT/CRON_IMAGE
   newName: pyrynot/random-todo-generator
-  newTag: 0a4a5fc78508ed37276b843bdd76d5608f5cf41f
+  newTag: aa49d2de9ad53eba1f9d13d72a8a46299eb2e7e4
