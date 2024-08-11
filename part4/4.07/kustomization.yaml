@@ -8,7 +8,7 @@ resources:
   #- manifests/secret.yaml
   - manifests/ingress.yaml
   - manifests/postgres-service.yaml
-  #- manifests/statefulset.yaml
+  - manifests/statefulset.yaml
   - manifests/configmap.yaml
 
 images:
