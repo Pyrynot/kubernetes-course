@@ -67,5 +67,5 @@ jobs:
       - name: commit kustomization.yaml to GitHub
         uses: EndBug/add-and-commit@v9
         with:
-          add: 'kustomization.yaml'
+          add: 'part4/4.08/manifests/staging/kustomization.yaml'
           message: New version released ${{ github.sha }}
