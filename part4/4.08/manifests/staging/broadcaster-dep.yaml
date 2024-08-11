@@ -24,7 +24,7 @@ spec:
 
           valueFrom:
             secretKeyRef:
-                  name: discord-secret
+                  name: postgres-secret
                   key: DISCORD_WEBHOOK_URL
         resources:
             requests:
