@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# kustomize doesn't work with rollouts, so I'm using deployments
+
+resources:
+  #- manifests/analysistemplate.yaml
+  - manifests/cronjob.yaml
+  - manifests/ingress.yaml
+  #- manifests/pg-backup.yaml
+  - manifests/postgres-service.yaml
+  - manifests/pv.yaml
+  - manifests/pvc.yaml
+  - manifests/secret.yaml
+  - manifests/statefulset.yaml
+  - manifests/todo-app-dep.yaml
+  #- manifests/todo-app-rollout.yaml
+  - manifests/todo-app-svc.yaml
+  - manifests/todo-backend-dep.yaml
+  #- manifests/todo-backend-rollout.yaml
+  - manifests/todo-backend-svc.yaml
+  - manifests/broadcaster-dep.yaml
+images:
+  - name: PROJECT/CRON_IMAGE
+    newName: pyrynot/random-todo-generator:4.06
+  - name: PROJECT/BACKEND_IMAGE
+    newName: pyrynot/todo-backend:4.06
+  - name: PROJECT/APP_IMAGE
+    newName: pyrynot/todo-app:4.06
+  - name: PROJECT/BACKUP_IMAGE
+    newName: pyrynot/pg-backup:4.02
+  - name: PROJECT/BROADCASTER_IMAGE
+    newName: pyrynot/broadcaster:4.06

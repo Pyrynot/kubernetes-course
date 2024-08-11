@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN pip install nats-py httpx
 
-COPY . .
+COPY /broadcaster/broadcaster.py .
 
 ENV PYTHONUNBUFFERED=1
 

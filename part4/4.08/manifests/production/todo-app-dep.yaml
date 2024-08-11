@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app-dep
+  namespace: project-namespace
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      containers:
+        - name: todo-app
+          image: PROJECT/APP_IMAGE
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "8010"
+            - name: DUMMY_VARIABLE
+              value: "3"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          volumeMounts:
+            - name: image-cache
+              mountPath: /app/static
+      volumes:
+        - name: image-cache
+          persistentVolumeClaim:
+            claimName: image-cache-pvc
