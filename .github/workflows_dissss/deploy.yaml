@@ -42,7 +42,7 @@ jobs:
 
       - name: Use right images
         run: |-
-          cd part4/4.07
+          cd part4/4.08/manifests/staging
           kustomize edit set image logger=mluukkai/logger:$GITHUB_SHA
           kustomize edit set image pingpong=mluukkai/pingpong:$GITHUB_SHA
           kustomize edit set image reader=mluukkai/reader:$GITHUB_SHA
