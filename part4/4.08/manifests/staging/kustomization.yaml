@@ -3,31 +3,35 @@ kind: Kustomization
 
 # kustomize doesn't work with rollouts, so I'm using deployments
 
-resources:
   #- manifests/analysistemplate.yaml
-  - cronjob.yaml
-  - ingress.yaml
   #- pg-backup.yaml
-  - postgres-service.yaml
-  - pv.yaml
-  - pvc.yaml
   #- manifests/secret.yaml
-  - statefulset.yaml
-  - todo-app-dep.yaml
   #- manifests/todo-app-rollout.yaml
-  - todo-app-svc.yaml
-  - todo-backend-dep.yaml
   #- manifests/todo-backend-rollout.yaml
-  - todo-backend-svc.yaml
-  - broadcaster-dep.yaml
+resources:
+- cronjob.yaml
+- ingress.yaml
+- postgres-service.yaml
+- pv.yaml
+- pvc.yaml
+- statefulset.yaml
+- todo-app-dep.yaml
+- todo-app-svc.yaml
+- todo-backend-dep.yaml
+- todo-backend-svc.yaml
+- broadcaster-dep.yaml
 images:
-  - name: PROJECT/CRON_IMAGE
-    newName: pyrynot/random-todo-generator:4.08
-  - name: PROJECT/BACKEND_IMAGE
-    newName: pyrynot/todo-backend:4.08
-  - name: PROJECT/APP_IMAGE
-    newName: pyrynot/todo-app:4.08
-  - name: PROJECT/BACKUP_IMAGE
-    newName: pyrynot/pg-backup:4.08
-  - name: PROJECT/BROADCASTER_IMAGE
-    newName: pyrynot/broadcaster:4.08
+- name: PROJECT/APP_IMAGE
+  newName: mluukkai/todo-app
+  newTag: 6d51b8ac365eba9545e8b0af22897c65ce9456cf
+- name: PROJECT/BACKEND_IMAGE
+  newName: pyrynot/todo-backend
+  newTag: 6d51b8ac365eba9545e8b0af22897c65ce9456cf
+- name: PROJECT/BACKUP_IMAGE
+  newName: pyrynot/pg-backup:4.08
+- name: PROJECT/BROADCASTER_IMAGE
+  newName: mluukkai/broadcaster
+  newTag: 6d51b8ac365eba9545e8b0af22897c65ce9456cf
+- name: PROJECT/CRON_IMAGE
+  newName: pyrynot/random-todo-generator
+  newTag: 6d51b8ac365eba9545e8b0af22897c65ce9456cf
