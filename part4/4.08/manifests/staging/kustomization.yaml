@@ -22,16 +22,16 @@ resources:
 - broadcaster-dep.yaml
 images:
 - name: PROJECT/APP_IMAGE
-  newName: mluukkai/todo-app
-  newTag: 6d51b8ac365eba9545e8b0af22897c65ce9456cf
+  newName: pyrynot/todo-app
+  newTag: 5e7d2c5a81abedd91455f1e476c10955101ee789
 - name: PROJECT/BACKEND_IMAGE
   newName: pyrynot/todo-backend
-  newTag: 6d51b8ac365eba9545e8b0af22897c65ce9456cf
+  newTag: 5e7d2c5a81abedd91455f1e476c10955101ee789
 - name: PROJECT/BACKUP_IMAGE
   newName: pyrynot/pg-backup:4.08
 - name: PROJECT/BROADCASTER_IMAGE
-  newName: mluukkai/broadcaster
-  newTag: 6d51b8ac365eba9545e8b0af22897c65ce9456cf
+  newName: pyrynot/broadcaster
+  newTag: 5e7d2c5a81abedd91455f1e476c10955101ee789
 - name: PROJECT/CRON_IMAGE
   newName: pyrynot/random-todo-generator
-  newTag: 6d51b8ac365eba9545e8b0af22897c65ce9456cf
+  newTag: 5e7d2c5a81abedd91455f1e476c10955101ee789
