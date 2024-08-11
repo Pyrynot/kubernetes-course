@@ -61,8 +61,8 @@ jobs:
           cd part4/4.08/manifests/staging
           kustomize edit set image PROJECT/CRON_IMAGE=pyrynot/random-todo-generator:$GITHUB_SHA
           kustomize edit set image PROJECT/BACKEND_IMAGE=pyrynot/todo-backend:$GITHUB_SHA
-          kustomize edit set image PROJECT/APP_IMAGE=mluukkai/todo-app:$GITHUB_SHA
-          kustomize edit set image PROJECT/BROADCASTER_IMAGE=mluukkai/broadcaster:$GITHUB_SHA
+          kustomize edit set image PROJECT/APP_IMAGE=pyrynot/todo-app:$GITHUB_SHA
+          kustomize edit set image PROJECT/BROADCASTER_IMAGE=pyrynot/broadcaster:$GITHUB_SHA
 
       - name: commit kustomization.yaml to GitHub
         uses: EndBug/add-and-commit@v9
