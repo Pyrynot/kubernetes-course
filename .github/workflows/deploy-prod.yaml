@@ -63,8 +63,13 @@ jobs:
           kustomize edit set image pyrynot/random-todo-generator=pyrynot/random-todo-generator:$GITHUB_SHA
           kustomize edit set image pyrynot/pg-backup=pyrynot/pg-backup:$GITHUB_SHA
 
+      - name: Checkout the main branch
+        run: |
+            git checkout main
+            git pull origin main
+
       - name: commit kustomization.yaml to GitHub
         uses: EndBug/add-and-commit@v9
         with:
             add: 'part4/4.08/manifests/production/kustomization.yaml'
-            message: New version released ${{ github.sha }}
+            message: New release version released ${{ github.sha }}
