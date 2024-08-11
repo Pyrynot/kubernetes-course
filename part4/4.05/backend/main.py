@@ -8,13 +8,28 @@ import os
 from contextlib import asynccontextmanager
 import httpx
 import logging
+import nats
+import json
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+NATS_URL = os.getenv("NATS_URL")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+
+async def init_nats():
+    return await nats.connect(NATS_URL)
+
+async def publish_event(event_type: str, data: dict):
+    nc = await init_nats()
+    message = {
+        "event": event_type,
+        "data": data
+    }
+    await nc.publish("todos.events", json.dumps(message).encode('utf-8'))
+    await nc.drain()
 
 class TodoDB(Base):
     __tablename__ = 'todos2'
@@ -78,6 +93,7 @@ async def create_todo(todo: TodoItem, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_todo)
     logger.info(f"Created to-do: {todo.content}")
+    await publish_event("todo_created", {"id": db_todo.id, "content": db_todo.content, "done": db_todo.done})
     return TodoItem(id=db_todo.id, content=db_todo.content, done=db_todo.done)
 
 
@@ -104,6 +120,7 @@ async def update_todo(todo_id: int, todo: TodoUpdate, db: Session = Depends(get_
     db.refresh(db_todo)
     
     logger.info(f"Updated to-do with ID {todo_id}: (Done: {todo.done})")
+    await publish_event("todo_updated", {"id": db_todo.id, "content": db_todo.content, "done": db_todo.done})
     return TodoItem(id=db_todo.id, content=db_todo.content, done=db_todo.done)
 
 

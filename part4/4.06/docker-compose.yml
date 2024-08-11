@@ -1,0 +1,7 @@
+services:
+  broadcaster:
+    build:
+      context: .
+      dockerfile: Dockerfile.broadcaster
+    image: pyrynot/broadcaster:4.06
+    container_name: broadcaster

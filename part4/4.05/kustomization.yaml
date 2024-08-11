@@ -21,10 +21,10 @@ resources:
   - manifests/todo-backend-svc.yaml
 images:
   - name: PROJECT/CRON_IMAGE
-    newName: pyrynot/random-todo-generator:4.05
+    newName: pyrynot/random-todo-generator:4.06
   - name: PROJECT/BACKEND_IMAGE
-    newName: pyrynot/todo-backend:4.05
+    newName: pyrynot/todo-backend:4.06
   - name: PROJECT/APP_IMAGE
-    newName: pyrynot/todo-app:4.05
+    newName: pyrynot/todo-app:4.06
   #- name: PROJECT/BACKUP_IMAGE
     #newName: pyrynot/pg-backup:4.02
