@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: exercise-namespace
+  name: pingponglog-configmap
+data:
+  information.txt: |
+    this text is from file
+  MESSAGE: "hello world"

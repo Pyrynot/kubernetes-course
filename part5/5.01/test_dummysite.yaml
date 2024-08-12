@@ -1,0 +1,7 @@
+apiVersion: example.com/v1
+kind: DummySite
+metadata:
+  name: example-site-2
+  namespace: project-namespace
+spec:
+  website_url: "https://example.com/"

@@ -1,0 +1,9 @@
+services:
+  pingpong:
+    build:
+      context: .
+      dockerfile: Dockerfile.pingpong
+    image: pyrynot/pingpong-app:5.07
+    container_name: pingpong
+    ports:
+      - "8020:8020"

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app-dep
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: todo-app
+    spec:
+      containers:
+      - env:
+        - name: PORT
+          value: "8010"
+        - name: DUMMY_VARIABLE
+          value: "3"
+        image: PROJECT/APP_IMAGE
+        imagePullPolicy: Always
+        name: todo-app
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        volumeMounts:
+        - mountPath: /app/static
+          name: image-cache
+      volumes:
+      - name: image-cache
+        persistentVolumeClaim:
+          claimName: image-cache-pvc
+---
